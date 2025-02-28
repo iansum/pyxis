@@ -150,7 +150,7 @@ if view_option == 'Upload and Map Data':
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)    
         data.columns = map(str.lower, data.columns)
-        st.write("uploaded dat is not None, MERON")
+        # st.write("uploaded dat is not None, MERON")
         # ---This section store teh session state variables for data, to be displayed
         st.session_state['datum'] = data # store in session_state
 
