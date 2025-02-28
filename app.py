@@ -77,6 +77,9 @@ legend._template = Template(legend_html)
 if 'data' not in st.session_state:
     st.session_state['data'] = None
 
+
+
+
 # # Title of the app
 # st.title('Mapping of Accident Prone Zone for Data Visualization and Analysis')
 
@@ -147,16 +150,9 @@ if view_option == 'Upload and Map Data':
     if uploaded_file is not None:
         data = pd.read_csv(uploaded_file)    
         data.columns = map(str.lower, data.columns)
+        st.write("uploaded dat is not None, MERON")
         # ---This section store teh session state variables for data, to be displayed
         st.session_state['datum'] = data # store in session_state
-
-
-
-    if 'datum' in st.session_state:
-        data = st.session_state['datum']
-        st.write("Uploaded Data:")
-        st.write(data.head())
-
 
         # Since the victims gender and suspects have similar values of M and F. I am going to make them distinguished from one another
         custom_victimsgender_mapping = {
@@ -172,11 +168,17 @@ if view_option == 'Upload and Map Data':
             st.write("victims gender is not in data.columns")
 
         # change the values using the custom mapping for victims gender
-        data['victims gender'] = data['victims gender'].map(custom_victimsgender_mapping)
+        st.session_state['datum']['victims gender'] = st.session_state.datum['victims gender'].map(custom_victimsgender_mapping)
 
         # change the values using the custom mapping for suspects gender
-        data['suspects gender'] = data['suspects gender'].map(custom_suspectsgender_mapping)
+        st.session_state['datum']['suspects gender'] = st.session_state.datum['suspects gender'].map(custom_suspectsgender_mapping)
 
+
+
+    if 'datum' in st.session_state:
+        data = st.session_state['datum']
+        st.write("Uploaded Data:")
+        st.write(data.head())
 
         # Define the age groups for victims and suspects
         age_bins = [0, 12, 19, 35, 50, 65, 100]
