@@ -15,6 +15,9 @@ from branca.element import Template, MacroElement
 import plotly.express as px
 
 
+
+
+
 # Add a legend to the map
 # Define the legend as a MacroElement
 legend_html = """
@@ -77,6 +80,9 @@ legend._template = Template(legend_html)
 if 'data' not in st.session_state:
     st.session_state['data'] = None
 
+if 'datum' not in st.session_state:
+    st.session_state['datum'] = None
+
 
 
 
@@ -129,6 +135,8 @@ def find_optimal_k(data, max_k=20):
 if view_option == 'Upload and Map Data':
     st.title("Upload CSV and Visualize Accident Data")
 
+
+
     uploaded_file = st.file_uploader("Choose a CSV file", type="csv", key='file_uploader')
     center_lat, center_lon = 13.4246, 123.3904
     zoom_level = 12
@@ -175,7 +183,7 @@ if view_option == 'Upload and Map Data':
 
 
 
-    if 'datum' in st.session_state:
+    if 'datum' in st.session_state and st.session_state['datum'] is not None:
         data = st.session_state['datum']
         st.write("Uploaded Data:")
         st.write(data.head())
