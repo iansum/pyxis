@@ -10,6 +10,8 @@ on:
 jobs:
   ping:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read  # Minimal permissions needed
     steps:
       - name: Ping Streamlit App
         env:
