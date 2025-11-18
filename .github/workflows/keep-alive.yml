@@ -1,0 +1,36 @@
+name: Keep Streamlit App Alive
+
+on:
+  schedule:
+    # Ping the app every 25 minutes to prevent it from sleeping
+    # Streamlit Cloud free tier apps sleep after 30 minutes of inactivity
+    - cron: '*/25 * * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read  # Minimal permissions needed
+    steps:
+      - name: Ping Streamlit App
+        env:
+          APP_URL: ${{ secrets.STREAMLIT_APP_URL }}
+        run: |
+          if [ -z "$APP_URL" ]; then
+            echo "Warning: STREAMLIT_APP_URL secret is not set"
+            echo "Please add your Streamlit app URL as a repository secret named 'STREAMLIT_APP_URL'"
+            echo "Example: https://your-app-name.streamlit.app"
+            exit 0
+          fi
+          
+          echo "Pinging app at: $APP_URL"
+          response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "$APP_URL" || echo "000")
+          
+          if [ "$response" = "200" ]; then
+            echo "✅ Successfully pinged app (HTTP $response)"
+          elif [ "$response" = "000" ]; then
+            echo "⚠️  Request timed out or failed"
+          else
+            echo "⚠️  Received HTTP $response (app may still be waking up)"
+          fi
